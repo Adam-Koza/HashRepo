@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.4.24;
 
 contract HashRepo {
 
@@ -33,7 +33,7 @@ contract HashRepo {
     }
 
     function sendHash (uint _repoID, string _msg) public {
-        require(!repoInfo[repoID].isPrivate || repoInfo[_repoID].whiteList[msg.sender], "You are not the authorized to push to this repo.");
+        require((repoInfo[repoID].isPrivate != false) || repoInfo[_repoID].whiteList[msg.sender]);
         repoInfo[_repoID].commitLog[repoInfo[_repoID].commitCount].commiter = msg.sender;
         repoInfo[_repoID].commitLog[repoInfo[_repoID].commitCount].hashMessage = _msg;
         repoInfo[_repoID].commitLog[repoInfo[_repoID].commitCount].commitBlock = block.number;
@@ -42,12 +42,12 @@ contract HashRepo {
     }
 
     function AddToWhiteList (uint _repoID, address _add) public {
-        require(repoInfo[_repoID].repoMaster == msg.sender, "You are not the repo master.");
+        require(repoInfo[_repoID].repoMaster == msg.sender);
         repoInfo[repoID].whiteList[_add] = true;
     }
 
     function RemoveFromWhiteList (uint _repoID, address _remove) public {
-        require(repoInfo[_repoID].repoMaster == msg.sender, "You are not the repo master.");
+        require(repoInfo[_repoID].repoMaster == msg.sender);
         repoInfo[repoID].whiteList[_remove] = false;
     }
 

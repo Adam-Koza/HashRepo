@@ -1,6 +1,6 @@
-var HelloWorld = artifacts.require("./HelloWorld.sol");
+var HashRepo = artifacts.require("./HashRepo.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(HelloWorld, "initial message");
+  deployer.deploy(HashRepo, "initial message");
 };
 
