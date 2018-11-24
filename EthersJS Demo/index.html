@@ -36,7 +36,7 @@
         })
 
         async function getRepoID() {
-            getHashPromise = HashRepoContract.RepoID();
+            getHashRepoPromise = HashRepoContract.repoID();
             var RepoID = await getHashRepoPromise;
             console.log(RepoID)
         }
