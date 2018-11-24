@@ -18,56 +18,33 @@
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
 
 
-    <a id="fakeButton" href="javascript:newTransaction();"></a>
+    <a id="fakeButton" href="javascript:newHashRepo();"></a>
+    <button onclick="getRepoID()">Get RepoID</button>
 
 
     <script> 
         var provider = new ethers.providers.Web3Provider(web3.currentProvider,'rinkeby');
 
-        var MoodContractAddress = "0xeff8a4b118508f42312aedbdd2a0d2b9eca8ffe2";
-        var MoodContractABI = [{"constant":false,"inputs":[{"name":"_dummy","type":"uint256"}],"name":"setID","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"transactionID","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
-        var MoodContract;
+        var HashRepoContractAddress = "0x924101dd98dac8501ed82fb162a75ba2c459f44d";
+        var HashRepoContractABI = [{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"repoInfo","outputs":[{"name":"repoMaster","type":"address"},{"name":"name","type":"string"},{"name":"commitCount","type":"uint256"},{"name":"isPrivate","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitHash","type":"string"},{"name":"_commitMessage","type":"string"}],"name":"sendCommit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_add","type":"address"}],"name":"AddToWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"repoID","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_remove","type":"address"}],"name":"RemoveFromWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_name","type":"string"},{"name":"_private","type":"bool"}],"name":"newHashRepo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+        var HashRepoContract;
         
 
         provider.listAccounts().then(function(accounts) {
             signer = provider.getSigner(accounts[0]);
-            MoodContract = new ethers.Contract(MoodContractAddress, MoodContractABI, signer);
+            HashRepoContract = new ethers.Contract(HashRepoContractAddress, HashRepoContractABI, signer);
         })
 
-        async function getMood() {
-            getMoodPromise = MoodContract.mood();
-            var Mood = await getMoodPromise;
-            console.log(Mood)
+        async function getRepoID() {
+            getHashPromise = HashRepoContract.RepoID();
+            var RepoID = await getHashRepoPromise;
+            console.log(RepoID)
         }
 
 
-
-
-
-
-        async function newTransaction(){
-
-  // First 4 bytes of the hash of "fee()" for the sighash selector
-  //let data = ethers.utils.hexDataSlice(ethers.utils.id('newTransaction()'), 0, 4);
-
-  //let data = ethers.utils.hexDataSlice("0xf8d0b4ff350edfda2ff8cc39972e10f3f909f4a5", "0xf8d0b4ff350edfda2ff8cc39972e10f3f909f4a5", 1);
-
-  //let transaction = {
-      //to: MoodContractAddress,
-      //data: data,
-  //}
-
-  //await signer.sendTransaction(transaction);
-
-
-
-
-            //let tx = await contractWithSigner.newTransaction("0xf8d0b4ff350edfda2ff8cc39972e10f3f909f4a5", "0xf8d0b4ff350edfda2ff8cc39972e10f3f909f4a5", 1);
-            //tx.value = 750;
-            //await tx.wait();
-
-            newTransactionPromise = MoodContract.setID(1);
-            await newTransactionPromise;
+        async function newHashRepo(){
+            newHashRepoPromise = HashRepoContract.newHashRepo("Yelp", false);
+            await newHashRepoPromise;
         }
 
     </script>
