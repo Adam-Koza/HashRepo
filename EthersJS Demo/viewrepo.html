@@ -4,7 +4,7 @@
 
 
 
-<!DOCTYPE html>
+<!DOCTYPE html
 <html lang="en">
   
 <!-- Mirrored from github.com/Adam-Koza/HashRepo/commits/master by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 24 Nov 2018 22:48:49 GMT -->
@@ -107,17 +107,27 @@
   </head>
 
   <body class="logged-out env-production">
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div class="position-relative js-header-wrapper ">
     <a href="#start-of-content" tabindex="1" class="px-2 py-4 bg-blue text-white show-on-focus js-skip-to-content">Skip to content</a>
     <div id="js-pjax-loader-bar" class="pjax-loader-bar"><div class="progress"></div></div>
 
     
-    
-    
-
-
 
         
 <header class="Header header-logged-out  position-relative f4 py-3" role="banner">
@@ -1161,14 +1171,123 @@
 
 
 
-  </div>
-  <div class="modal-backdrop js-touch-events"></div>
-</div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="file-commit-form js-file-commit-form ">
+
+  
+      <span class="commit-form-avatar ">
+        <a class="d-inline-block" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="/Adam-Koza"><img class="float-left rounded-1" src="https://avatars3.githubusercontent.com/u/16749083?s=96&amp;v=4" width="48" height="48" alt="@Adam-Koza"></a>
+      </span>
+  
+      <div class="commit-form position-relative mb-2 p-3 border rounded-1">
+        <h3>Witness new hash to the blockchain</h3>
+  
+        <div class="text-orange js-too-long-error d-none">
+          <svg class="octicon octicon-light-bulb" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg>
+          <strong>ProTip!</strong> Great commit summaries contain fewer than 50 characters. Place extra information in the extended description.
+        </div>
+  
+        <label for="commit-summary-input" class="sr-only">
+          Commit summary
+        </label>
+        <input id="commit-summary-input" type="text" class="form-control input-block input-contrast js-new-blob-commit-summary" placeholder="New Hash" name="message" value="" autocomplete="off">
+        <input type="hidden" class="js-commit-message-fallback" name="placeholder_message" value="Create new file" data-default-value="Create new file">
+  
+        <label for="commit-description-textarea" class="sr-only">
+          Optional extended description
+        </label>
+  
+        <div class="js-suggester-container position-relative">
+          <textarea id="commit-description-textarea" name="description" class="form-control input-block input-contrast comment-form-textarea js-quick-submit js-suggester-field" placeholder="Add an optional hash description…"></textarea>
+          <div class="suggester-container">
+            <div class="suggester js-navigation-container js-suggester" data-url="/suggestions?repository=HashRepo&amp;user_id=Adam-Koza" hidden="">
+              <ul class="suggestions mention-suggestions" style="display:none"></ul>
+            </div>
+          </div>
+        </div>
+  
+  
+        
+  <div class="form-group mb-0" role="radiogroup" aria-label="Commit choice">
+    <div class="form-checkbox pl-4 mt-0 mb-2">
+      <label class="text-normal">
+        <input type="radio" class="js-quick-pull-choice-option" name="commit-choice" value="direct" checked="checked">
+          <svg class="octicon octicon-git-commit text-gray mr-1 text-center" height="16" width="16" viewBox="0 0 14 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z"></path></svg>
+          Witness directly to the blockchain.
+      </label>
+    </div>
+    <div class="form-checkbox pl-4 my-0">
+      <label class="text-normal">
+        <input type="radio" class="js-quick-pull-choice-option" name="commit-choice" value="quick-pull">
+        <svg class="octicon octicon-git-pull-request text-gray mr-1 text-center" height="16" width="16" viewBox="0 0 12 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z"></path></svg>
+        Witness in aggregate to the blockchain (budget option).
+      </label>
     </div>
   </div>
-
+  
+  <div class="ml-6 js-quick-pull-branch-name mt-2 d-none">
+    <div class="position-relative mt-2 ml-2">
+      <svg class="octicon octicon-git-branch quick-pull-new-branch-icon text-gray-light position-absolute text-center" height="16" width="16" viewBox="0 0 10 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M10 5c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v.3c-.02.52-.23.98-.63 1.38-.4.4-.86.61-1.38.63-.83.02-1.48.16-2 .45V4.72a1.993 1.993 0 0 0-1-3.72C.88 1 0 1.89 0 3a2 2 0 0 0 1 1.72v6.56c-.59.35-1 .99-1 1.72 0 1.11.89 2 2 2 1.11 0 2-.89 2-2 0-.53-.2-1-.53-1.36.09-.06.48-.41.59-.47.25-.11.56-.17.94-.17 1.05-.05 1.95-.45 2.75-1.25S8.95 7.77 9 6.73h-.02C9.59 6.37 10 5.73 10 5zM2 1.8c.66 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2C1.35 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2zm0 12.41c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm6-8c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z"></path></svg>
+      <input type="text" value="Adam-Koza-patch-1" class="form-control input-contrast mr-1 pl-5 input-monospace js-quick-pull-new-branch-name" placeholder="New branch name" aria-label="New branch name" aria-describedby="quick-pull-normalization-info" data-generated-branch="Adam-Koza-patch-1" data-check-url="https://github.com/Adam-Koza/HashRepo/ref_check#csrf-token=zfiK/XalhJAXV1p4z5Z+45DeVpRDGCTBg88W6RCKXGs5WDeU0x7kl4+tj/+Z0K2BABdTM3YLZcEc0tUTpCmC5g==">
+      <span class="text-gray js-quick-pull-normalization-info" id="quick-pull-normalization-info"></span>
+    </div>
   </div>
+  
+  <input type="hidden" name="target_branch" class="js-quick-pull-target-branch" value="master" data-default-value="master">
+  <input type="hidden" name="quick_pull" class="js-quick-pull-choice-value" value="" data-default-value="">
+  
+  
+      </div>
+  
+      <button type="submit" class="btn btn-primary js-blob-submit" id="submit-file" data-edit-text="Commit new file" data-pull-text="Propose new file" disabled="">
+        Witness hash
+      </button>
+  
+        <a class="btn btn-danger" href="/Adam-Koza/HashRepo">Cancel</a>
+  
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
 <div class="footer container-lg px-3" role="contentinfo">
@@ -1253,6 +1372,51 @@
 <div id="hovercard-aria-description" class="sr-only">
   Press h to open a hovercard with more details.
 </div>
+
+
+
+
+
+
+
+</div>
+<div class="modal-backdrop js-touch-events"></div>
+</div>
+
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   </body>
