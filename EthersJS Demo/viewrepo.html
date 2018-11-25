@@ -131,9 +131,14 @@
           async function getCommitCount(RepoID) {
               getCommitCountPromise = HashRepoContract.GetCommitCount(RepoID);
               var RepoCommitCount = await getCommitCountPromise;
-              //console.log(RepoCommitCount._hex);
-              console.log(parseInt(RepoCommitCount._hex, 16))
-              //getCommits(RepoCommitCount)
+              console.log(parseInt(RepoCommitCount._hex, 16));
+              for (i=0;i<parseInt(RepoCommitCount._hex, 16);i++){
+                getCommitHash(RepoID, i);
+                getCommiter(RepoID, i);
+                getCommitMessage(RepoID, i);
+                getCommitBlock(RepoID, i);
+
+              }
           }
   
   
@@ -146,6 +151,24 @@
               getCommitHash = HashRepoContract.GetCommitHash(repoid, commitid);
               var CommitHash = await getCommitHash;
               console.log(CommitHash)
+          }
+
+          async function getCommiter(repoid, commitid){
+              getCommiter = HashRepoContract.GetCommiter(repoid, commitid);
+              var Commiter = await getCommiter;
+              console.log(Commiter)
+          }
+
+          async function getCommitMessage(repoid, commitid){
+              getCommitMessage = HashRepoContract.GetCommitMessage(repoid, commitid);
+              var CommitMessage = await getCommitMessage;
+              console.log(CommitMessage)
+          }
+
+          async function getCommitBlock(repoid, commitid){
+              getCommitBlock = HashRepoContract.GetCommitBlock(repoid, commitid);
+              var CommitBlock = await getCommitBlock;
+              console.log(parseInt(CommitBlock._hex, 16))
           }
 
 
