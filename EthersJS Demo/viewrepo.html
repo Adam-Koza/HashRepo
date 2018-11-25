@@ -106,7 +106,7 @@
 
   </head>
 
-  <body class="logged-out env-production">
+  <body class="logged-out env-production" onload="getCommitCount(0)">
 
       <script charset="utf-8"
         src="https://cdn.ethers.io/scripts/ethers-v4.min.js"
@@ -133,10 +133,75 @@
               var RepoCommitCount = await getCommitCountPromise;
               console.log(parseInt(RepoCommitCount._hex, 16));
               for (i=0;i<parseInt(RepoCommitCount._hex, 16);i++){
-                getCommitHash(RepoID, i);
-                getCommiter(RepoID, i);
-                getCommitMessage(RepoID, i);
-                getCommitBlock(RepoID, i);
+                var hash = await getCommitHash(RepoID, i);
+                var commiter = await getCommiter(RepoID, i);
+                var msg = await getCommitMessage(RepoID, i);
+                var block = await getCommitBlock(RepoID, i);
+                var topblock = document.getElementById('commitlist');
+			          var existinghtml = topblock.innerHTML;
+			          topblock.innerHTML = `<li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
+    data-channel="repo:158966961:commit:b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4"
+    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOmI3NmNjM2YyOWI4MDIxZTc0YzBiYTMxNjgwZDRmZjVjOTBlYjE0YzQ=/commits/commits_list_item">
+  
+<div class="table-list-cell">
+  <p class="commit-title h5 mb-1 text-gray-dark ">
+      <a aria-label="` + msg + `" class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4">` + msg + `</a>
+
+  </p>
+
+  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
+    
+<div class="AvatarStack flex-self-start ">
+  <div class="AvatarStack-body" aria-label="` + commiter + `">
+
+        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
+          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
+</a>  </div>
+</div>
+
+    <div>
+      
+      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
+     class="commit-author tooltipped tooltipped-s user-mention"
+     aria-label="View all commits by Adam-Koza">` + commiter + `</a>
+
+
+  committed at block: ` + block + `
+
+    </div>
+  </div>
+
+
+</div>
+
+<div class="commit-links-cell table-list-cell">
+
+  
+
+
+  <div class="commit-links-group BtnGroup">
+    <clipboard-copy value="` + hash + `" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
+      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
+    </clipboard-copy>
+
+    <a href="https://github.com/Adam-Koza/HashRepo/commit/b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4" class="sha btn btn-outline BtnGroup-item">
+      b76cc3f
+    </a>
+  </div>
+  <a href="https://github.com/Adam-Koza/HashRepo/tree/b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
+</div>
+
+</li>
+
+
+
+` + existinghtml;
+
+
+
+
+
+
 
               }
           }
@@ -147,28 +212,42 @@
               await newHashRepoPromise;
           }
 
+          async function newCommit(){
+            var hash = document.getElementById('commit-summary-input');
+			      var hash = hash.value;
+            var msg = document.getElementById('commit-description-textarea');
+			      var msg = msg.value;
+
+              newCommitPromise = HashRepoContract.sendCommit(0, hash, msg);
+              await newCommitPromise;
+          }
+
           async function getCommitHash(repoid, commitid){
-              getCommitHash = HashRepoContract.GetCommitHash(repoid, commitid);
-              var CommitHash = await getCommitHash;
+              getCommitHashb = HashRepoContract.GetCommitHash(repoid, commitid);
+              var CommitHash = await getCommitHashb;
               console.log(CommitHash)
+              return CommitHash;
           }
 
           async function getCommiter(repoid, commitid){
-              getCommiter = HashRepoContract.GetCommiter(repoid, commitid);
-              var Commiter = await getCommiter;
+              getCommiterb = HashRepoContract.GetCommiter(repoid, commitid);
+              var Commiter = await getCommiterb;
               console.log(Commiter)
+              return Commiter
           }
 
           async function getCommitMessage(repoid, commitid){
-              getCommitMessage = HashRepoContract.GetCommitMessage(repoid, commitid);
-              var CommitMessage = await getCommitMessage;
+              getCommitMessageb = HashRepoContract.GetCommitMessage(repoid, commitid);
+              var CommitMessage = await getCommitMessageb;
               console.log(CommitMessage)
+              return CommitMessage
           }
 
           async function getCommitBlock(repoid, commitid){
-              getCommitBlock = HashRepoContract.GetCommitBlock(repoid, commitid);
-              var CommitBlock = await getCommitBlock;
+              getCommitBlockb = HashRepoContract.GetCommitBlock(repoid, commitid);
+              var CommitBlock = await getCommitBlockb;
               console.log(parseInt(CommitBlock._hex, 16))
+              return parseInt(CommitBlock._hex, 16)
           }
 
 
@@ -598,634 +677,10 @@
 
     <div class="commits-listing commits-listing-padded js-navigation-container js-active-navigation-container" data-navigation-scroll="page">
         <div class="commit-group-title">
-          <svg class="octicon octicon-git-commit" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z"/></svg>Commits on Nov 24, 2018
+          <svg class="octicon octicon-git-commit" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z"/></svg>Commits on Nov 25, 2018
         </div>
 
-        <ol class="commit-group table-list table-list-bordered">
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOmI3NmNjM2YyOWI4MDIxZTc0YzBiYTMxNjgwZDRmZjVjOTBlYjE0YzQ=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Reorganize EthersJS Demo." class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4">Reorganize EthersJS Demo.</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T22:08:25Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4" class="sha btn btn-outline BtnGroup-item">
-      b76cc3f
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/b76cc3f29b8021e74c0ba31680d4ff5c90eb14c4" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:5f38f74cf64e498f5df1b727f266b7bddf723c06"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOjVmMzhmNzRjZjY0ZTQ5OGY1ZGYxYjcyN2YyNjZiN2JkZGY3MjNjMDY=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Update EthersJS demo." class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/5f38f74cf64e498f5df1b727f266b7bddf723c06">Update EthersJS demo.</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T21:03:31Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="5f38f74cf64e498f5df1b727f266b7bddf723c06" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/5f38f74cf64e498f5df1b727f266b7bddf723c06" class="sha btn btn-outline BtnGroup-item">
-      5f38f74
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/5f38f74cf64e498f5df1b727f266b7bddf723c06" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:d61b10f96a1b298d1bcc2581950287790070b1f7"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOmQ2MWIxMGY5NmExYjI5OGQxYmNjMjU4MTk1MDI4Nzc5MDA3MGIxZjc=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Update EthersJS demo." class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/d61b10f96a1b298d1bcc2581950287790070b1f7">Update EthersJS demo.</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T20:55:12Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="d61b10f96a1b298d1bcc2581950287790070b1f7" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/d61b10f96a1b298d1bcc2581950287790070b1f7" class="sha btn btn-outline BtnGroup-item">
-      d61b10f
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/d61b10f96a1b298d1bcc2581950287790070b1f7" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:ebd429b5a3b2706795af5882794f724391387ab9"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOmViZDQyOWI1YTNiMjcwNjc5NWFmNTg4Mjc5NGY3MjQzOTEzODdhYjk=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Add EthersJS example." class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/ebd429b5a3b2706795af5882794f724391387ab9">Add EthersJS example.</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T20:46:42Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="ebd429b5a3b2706795af5882794f724391387ab9" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/ebd429b5a3b2706795af5882794f724391387ab9" class="sha btn btn-outline BtnGroup-item">
-      ebd429b
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/ebd429b5a3b2706795af5882794f724391387ab9" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:95b8b837ca8a8bb7b1116fc23c70cb25071fc4f1"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOjk1YjhiODM3Y2E4YThiYjdiMTExNmZjMjNjNzBjYjI1MDcxZmM0ZjE=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Add repo name and commit message." class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/95b8b837ca8a8bb7b1116fc23c70cb25071fc4f1">Add repo name and commit message.</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T20:43:34Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="95b8b837ca8a8bb7b1116fc23c70cb25071fc4f1" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/95b8b837ca8a8bb7b1116fc23c70cb25071fc4f1" class="sha btn btn-outline BtnGroup-item">
-      95b8b83
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/95b8b837ca8a8bb7b1116fc23c70cb25071fc4f1" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:538f90dda26ea69f153b9d34dc58165921c32c11"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOjUzOGY5MGRkYTI2ZWE2OWYxNTNiOWQzNGRjNTgxNjU5MjFjMzJjMTE=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Truffle integration." class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/538f90dda26ea69f153b9d34dc58165921c32c11">Truffle integration.</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T20:37:03Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="538f90dda26ea69f153b9d34dc58165921c32c11" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/538f90dda26ea69f153b9d34dc58165921c32c11" class="sha btn btn-outline BtnGroup-item">
-      538f90d
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/538f90dda26ea69f153b9d34dc58165921c32c11" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:218b61c4004610e11432f7fe16bd435793c86a86"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOjIxOGI2MWM0MDA0NjEwZTExNDMyZjdmZTE2YmQ0MzU3OTNjODZhODY=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="moved .sol file" class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/218b61c4004610e11432f7fe16bd435793c86a86">moved .sol file</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="MarkCBall">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=43188883" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/MarkCBall">
-          <img height="20" width="20" alt="@MarkCBall" src="https://avatars0.githubusercontent.com/u/43188883?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=MarkCBall"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by MarkCBall">MarkCBall</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T20:03:54Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="218b61c4004610e11432f7fe16bd435793c86a86" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/218b61c4004610e11432f7fe16bd435793c86a86" class="sha btn btn-outline BtnGroup-item">
-      218b61c
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/218b61c4004610e11432f7fe16bd435793c86a86" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:9e4069b340e98511f1fe9046ef9e87bb07b819f1"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOjllNDA2OWIzNDBlOTg1MTFmMWZlOTA0NmVmOWU4N2JiMDdiODE5ZjE=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Add HashRepo contract" class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/9e4069b340e98511f1fe9046ef9e87bb07b819f1">Add HashRepo contract</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T20:01:53Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-    <details class="dropdown dropdown-signed-commit details-reset details-overlay js-dropdown-details d-inline-block">
-        <summary class="signed-commit-badge signed-commit-badge-large verified"
-          aria-label="View commit signature"
-          aria-haspopup="true">
-            Verified
-        </summary>
-        <div class="anim-scale-in" style="position: relative; z-index: 200;">
-          <div class="dropdown-menu dropdown-menu-s py-0 text-gray-dark text-left">
-            <div class="signed-commit-header TableObject">
-              <div class="TableObject-item">
-                <svg height="32" class="octicon octicon-verified mr-2" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M16.65 7.507l-1.147-1.423a1.595 1.595 0 0 1-.33-.817l-.201-1.805a1.603 1.603 0 0 0-1.412-1.413l-1.806-.201a1.617 1.617 0 0 1-.828-.35L9.503.35a1.597 1.597 0 0 0-1.996 0L6.084 1.497c-.233.18-.51.297-.817.33l-1.805.201A1.603 1.603 0 0 0 2.049 3.44l-.201 1.805c-.032.319-.17.595-.35.829L.35 7.497a1.597 1.597 0 0 0 0 1.996l1.147 1.423c.18.233.297.51.33.817l.201 1.805a1.603 1.603 0 0 0 1.412 1.413l1.805.201c.319.032.595.17.829.35l1.423 1.148a1.597 1.597 0 0 0 1.996 0l1.423-1.147c.233-.18.51-.297.817-.33l1.805-.201a1.603 1.603 0 0 0 1.413-1.412l.201-1.806c.032-.318.17-.594.35-.828l1.148-1.423a1.597 1.597 0 0 0 0-1.996zm-9.737 5.246L3.196 9.036 4.79 7.443l2.124 2.124 5.309-5.309 1.593 1.646-6.902 6.849z"/></svg>
-              </div>
-              <div class="TableObject-item--primary">
-                    This commit was created on GitHub.com and signed with a <strong class="signed-commit-verified-label">verified signature</strong> using GitHub’s key.
-              </div>
-            </div>
-
-
-            <div class="signed-commit-footer">
-                <span class="d-block">GPG key ID: <span class="text-gray">4AEE18F83AFDEB23</span></span>
-              <a href="https://help.github.com/articles/signing-commits-with-gpg/">Learn about signing commits</a>
-            </div>
-          </div>
-        </div>
-    </details>
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="9e4069b340e98511f1fe9046ef9e87bb07b819f1" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/9e4069b340e98511f1fe9046ef9e87bb07b819f1" class="sha btn btn-outline BtnGroup-item">
-      9e4069b
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/9e4069b340e98511f1fe9046ef9e87bb07b819f1" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:d6bdc082873c423e8a515dc59b44bbf15924eba0"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOmQ2YmRjMDgyODczYzQyM2U4YTUxNWRjNTliNDRiYmYxNTkyNGViYTA=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Initial Commit" class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/d6bdc082873c423e8a515dc59b44bbf15924eba0">Initial Commit</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T19:28:56Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-    <details class="dropdown dropdown-signed-commit details-reset details-overlay js-dropdown-details d-inline-block">
-        <summary class="signed-commit-badge signed-commit-badge-large verified"
-          aria-label="View commit signature"
-          aria-haspopup="true">
-            Verified
-        </summary>
-        <div class="anim-scale-in" style="position: relative; z-index: 200;">
-          <div class="dropdown-menu dropdown-menu-s py-0 text-gray-dark text-left">
-            <div class="signed-commit-header TableObject">
-              <div class="TableObject-item">
-                <svg height="32" class="octicon octicon-verified mr-2" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M16.65 7.507l-1.147-1.423a1.595 1.595 0 0 1-.33-.817l-.201-1.805a1.603 1.603 0 0 0-1.412-1.413l-1.806-.201a1.617 1.617 0 0 1-.828-.35L9.503.35a1.597 1.597 0 0 0-1.996 0L6.084 1.497c-.233.18-.51.297-.817.33l-1.805.201A1.603 1.603 0 0 0 2.049 3.44l-.201 1.805c-.032.319-.17.595-.35.829L.35 7.497a1.597 1.597 0 0 0 0 1.996l1.147 1.423c.18.233.297.51.33.817l.201 1.805a1.603 1.603 0 0 0 1.412 1.413l1.805.201c.319.032.595.17.829.35l1.423 1.148a1.597 1.597 0 0 0 1.996 0l1.423-1.147c.233-.18.51-.297.817-.33l1.805-.201a1.603 1.603 0 0 0 1.413-1.412l.201-1.806c.032-.318.17-.594.35-.828l1.148-1.423a1.597 1.597 0 0 0 0-1.996zm-9.737 5.246L3.196 9.036 4.79 7.443l2.124 2.124 5.309-5.309 1.593 1.646-6.902 6.849z"/></svg>
-              </div>
-              <div class="TableObject-item--primary">
-                    This commit was created on GitHub.com and signed with a <strong class="signed-commit-verified-label">verified signature</strong> using GitHub’s key.
-              </div>
-            </div>
-
-
-            <div class="signed-commit-footer">
-                <span class="d-block">GPG key ID: <span class="text-gray">4AEE18F83AFDEB23</span></span>
-              <a href="https://help.github.com/articles/signing-commits-with-gpg/">Learn about signing commits</a>
-            </div>
-          </div>
-        </div>
-    </details>
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="d6bdc082873c423e8a515dc59b44bbf15924eba0" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/d6bdc082873c423e8a515dc59b44bbf15924eba0" class="sha btn btn-outline BtnGroup-item">
-      d6bdc08
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/d6bdc082873c423e8a515dc59b44bbf15924eba0" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
-
-            <li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
-    data-channel="repo:158966961:commit:ed1d9dcea45dac46d33ec7591d1376319a1f9f3e"
-    data-url="/_render_node/MDY6Q29tbWl0MTU4OTY2OTYxOmVkMWQ5ZGNlYTQ1ZGFjNDZkMzNlYzc1OTFkMTM3NjMxOWExZjlmM2U=/commits/commits_list_item">
-  
-<div class="table-list-cell">
-  <p class="commit-title h5 mb-1 text-gray-dark ">
-      <a aria-label="Initial commit" class="message js-navigation-open" data-pjax="true" href="https://github.com/Adam-Koza/HashRepo/commit/ed1d9dcea45dac46d33ec7591d1376319a1f9f3e">Initial commit</a>
-
-  </p>
-
-  <div class="commit-meta commit-author-section no-wrap d-flex flex-items-center mt-1">
-    
-<div class="AvatarStack flex-self-start ">
-  <div class="AvatarStack-body" aria-label="Adam-Koza">
-
-        <a class="avatar" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/hovercards?user_id=16749083" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/Adam-Koza">
-          <img height="20" width="20" alt="@Adam-Koza" src="https://avatars2.githubusercontent.com/u/16749083?s=60&amp;v=4" />
-</a>  </div>
-</div>
-
-    <div>
-      
-      <a href="https://github.com/Adam-Koza/HashRepo/commits?author=Adam-Koza"
-     class="commit-author tooltipped tooltipped-s user-mention"
-     aria-label="View all commits by Adam-Koza">Adam-Koza</a>
-
-
-  committed
-  <relative-time datetime="2018-11-24T19:25:09Z">Nov 24, 2018</relative-time>
-
-    </div>
-  </div>
-
-
-</div>
-
-<div class="commit-links-cell table-list-cell">
-
-  
-    <details class="dropdown dropdown-signed-commit details-reset details-overlay js-dropdown-details d-inline-block">
-        <summary class="signed-commit-badge signed-commit-badge-large verified"
-          aria-label="View commit signature"
-          aria-haspopup="true">
-            Verified
-        </summary>
-        <div class="anim-scale-in" style="position: relative; z-index: 200;">
-          <div class="dropdown-menu dropdown-menu-s py-0 text-gray-dark text-left">
-            <div class="signed-commit-header TableObject">
-              <div class="TableObject-item">
-                <svg height="32" class="octicon octicon-verified mr-2" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M16.65 7.507l-1.147-1.423a1.595 1.595 0 0 1-.33-.817l-.201-1.805a1.603 1.603 0 0 0-1.412-1.413l-1.806-.201a1.617 1.617 0 0 1-.828-.35L9.503.35a1.597 1.597 0 0 0-1.996 0L6.084 1.497c-.233.18-.51.297-.817.33l-1.805.201A1.603 1.603 0 0 0 2.049 3.44l-.201 1.805c-.032.319-.17.595-.35.829L.35 7.497a1.597 1.597 0 0 0 0 1.996l1.147 1.423c.18.233.297.51.33.817l.201 1.805a1.603 1.603 0 0 0 1.412 1.413l1.805.201c.319.032.595.17.829.35l1.423 1.148a1.597 1.597 0 0 0 1.996 0l1.423-1.147c.233-.18.51-.297.817-.33l1.805-.201a1.603 1.603 0 0 0 1.413-1.412l.201-1.806c.032-.318.17-.594.35-.828l1.148-1.423a1.597 1.597 0 0 0 0-1.996zm-9.737 5.246L3.196 9.036 4.79 7.443l2.124 2.124 5.309-5.309 1.593 1.646-6.902 6.849z"/></svg>
-              </div>
-              <div class="TableObject-item--primary">
-                    This commit was created on GitHub.com and signed with a <strong class="signed-commit-verified-label">verified signature</strong> using GitHub’s key.
-              </div>
-            </div>
-
-
-            <div class="signed-commit-footer">
-                <span class="d-block">GPG key ID: <span class="text-gray">4AEE18F83AFDEB23</span></span>
-              <a href="https://help.github.com/articles/signing-commits-with-gpg/">Learn about signing commits</a>
-            </div>
-          </div>
-        </div>
-    </details>
-
-
-  <div class="commit-links-group BtnGroup">
-    <clipboard-copy value="ed1d9dcea45dac46d33ec7591d1376319a1f9f3e" aria-label="Copy the full SHA" class="btn btn-outline BtnGroup-item">
-      <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"/></svg>
-    </clipboard-copy>
-
-    <a href="https://github.com/Adam-Koza/HashRepo/commit/ed1d9dcea45dac46d33ec7591d1376319a1f9f3e" class="sha btn btn-outline BtnGroup-item">
-      ed1d9dc
-    </a>
-  </div>
-  <a href="https://github.com/Adam-Koza/HashRepo/tree/ed1d9dcea45dac46d33ec7591d1376319a1f9f3e" aria-label="Browse the repository at this point in the history" class="btn btn-outline tooltipped tooltipped-sw" rel="nofollow"><svg class="octicon octicon-code" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z"/></svg></a>
-</div>
-
-</li>
+        <ol id="commitlist" class="commit-group table-list table-list-bordered">
 
         </ol>
     </div>
@@ -1329,7 +784,7 @@
   
       </div>
   
-      <button onclick="getCommitCount(0)" type="submit" class="btn btn-primary js-blob-submit" id="submit-file" data-edit-text="Commit new file" data-pull-text="Propose new file">
+      <button onclick="newCommit()" type="submit" class="btn btn-primary js-blob-submit" id="submit-file" data-edit-text="Commit new file" data-pull-text="Propose new file">
         Witness hash
       </button>
   
@@ -1452,7 +907,6 @@
 </div>
 
 </div>
-
 
 
 
