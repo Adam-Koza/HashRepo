@@ -26,10 +26,10 @@
             HashRepoContract = new ethers.Contract(HashRepoContractAddress, HashRepoContractABI, signer);
         })
 
-        async function getRepoID() {
-            getHashRepoPromise = HashRepoContract.repoID();
-            var RepoID = await getHashRepoPromise;
-            console.log(RepoID)
+        function getRepoID() {
+            HashRepoContract.repoID(getHashRepoPromise)
+            .then(console.log(getHashRepoPromise));
+            
         }
 
 
