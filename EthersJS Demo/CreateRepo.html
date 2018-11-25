@@ -14,7 +14,32 @@
   <link crossorigin="anonymous" media="all" integrity="sha512-W9L323cuphhBv4vNladlNk8BLdMyLuMIbmRIUvguhsFOh9lzoKtVab9+iP0vUmcKVNxsXr50EA0WdHe1pOa6ZQ==" rel="stylesheet" href="https://assets-cdn.github.com/assets/github-2e573f171c5df207e0d7aa8b31f34469.css">
   
   
+  <script charset="utf-8"
+        src="https://cdn.ethers.io/scripts/ethers-v4.min.js"
+        type="text/javascript">
+      </script>
+      <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
+
+      <script> 
+          var provider = new ethers.providers.Web3Provider(web3.currentProvider,'rinkeby');
   
+          var HashRepoContractAddress = "0xa982c18ecc74ae2a316ed0135258eb277c3ca43d";
+          var HashRepoContractABI = [{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitHash","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"}],"name":"GetCommitCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"repoInfo","outputs":[{"name":"repoMaster","type":"address"},{"name":"name","type":"string"},{"name":"commitCount","type":"uint256"},{"name":"isPrivate","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitHash","type":"string"},{"name":"_commitMessage","type":"string"}],"name":"sendCommit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitMessage","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitBlock","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_add","type":"address"}],"name":"AddToWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"repoID","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_remove","type":"address"}],"name":"RemoveFromWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_name","type":"string"},{"name":"_private","type":"bool"}],"name":"newHashRepo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommiter","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+          var HashRepoContract;
+          
+  
+          provider.listAccounts().then(function(accounts) {
+              signer = provider.getSigner(accounts[0]);
+              HashRepoContract = new ethers.Contract(HashRepoContractAddress, HashRepoContractABI, signer);
+          })
+  
+          async function newRepo() {
+              getCommitCountPromise = HashRepoContract.newHashRepo("new repo", true);
+              var RepoCommitCount = await getCommitCountPromise;
+              console.log(RepoCommitCount);
+          }
+      </script>
   
   
 
@@ -280,7 +305,7 @@
           <li><a role="menuitem" class="dropdown-item" href="/settings/profile" data-ga-click="Header, go to settings, icon:settings">Settings</a></li>
           <li>
             <!-- '"` --><!-- </textarea></xmp> --><form class="logout-form" action="/logout" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="wJzsssp0ni95nohNXFu+NFqeUmCgsKDGCpGb0USW+c667WQFetgXSV+elZWJLxlQXZ9gfttxsnBNN0d43reYtg==">
-              <button type="submit" class="dropdown-item dropdown-signout" data-ga-click="Header, sign out, icon:logout" role="menuitem">
+              <button onclick="newRepo()" type="submit" class="dropdown-item dropdown-signout" data-ga-click="Header, sign out, icon:logout" role="menuitem">
                 Sign out
               </button>
 </form>          </li>
@@ -293,7 +318,7 @@
 
 
         <!-- '"` --><!-- </textarea></xmp> --><form class="sr-only right-0" action="/logout" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="UEFXUy+w7v6CQPL9GAQPYIicBNg94LBqM/UbC+hkaO4qMN/knxxnmKRA7yXNcKgEj502xkYhotx0U8eickUJlg==">
-          <button type="submit" class="dropdown-item dropdown-signout" data-ga-click="Header, sign out, icon:logout">
+          <button onclick="newRepo()" type="submit" class="dropdown-item dropdown-signout" data-ga-click="Header, sign out, icon:logout">
             Sign out
           </button>
 </form>      </div>
@@ -445,7 +470,7 @@
 
       <hr>
 
-      <button type="submit" class="btn btn-primary first-in-line" data-disable-with="Creating repository…" disabled="">
+      <button onclick="newRepo()" type="submit" class="btn btn-primary first-in-line" data-disable-with="Creating repository…" disabled="">
         Create Witnessing Group
       </button>
     </div><!-- /.js-with-permission-fields -->
