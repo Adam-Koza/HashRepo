@@ -54,5 +54,25 @@ contract HashRepo {
         require(repoInfo[_repoID].repoMaster == msg.sender, "You are not the repo master.");
         repoInfo[repoID].whiteList[_remove] = false;
     }
+    
+    function GetCommitCount (uint _repoID) public view returns(uint) {
+        return repoInfo[_repoID].commitCount;
+    }
+    
+    function GetCommiter (uint _repoID, uint _commitID) public view returns(address) {
+        return repoInfo[_repoID].commitLog[_commitID].commiter;
+    }
+    
+    function GetCommitHash (uint _repoID, uint _commitID) public view returns(string) {
+        return repoInfo[_repoID].commitLog[_commitID].commitHash;
+    }
+    
+    function GetCommitMessage (uint _repoID, uint _commitID) public view returns(string) {
+        return repoInfo[_repoID].commitLog[_commitID].commitMessage;
+    }
+    
+    function GetCommitBlock (uint _repoID, uint _commitID) public view returns(uint) {
+        return repoInfo[_repoID].commitLog[_commitID].commitBlock;
+    }
 
 }
