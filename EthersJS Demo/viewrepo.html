@@ -118,8 +118,8 @@
       <script> 
           var provider = new ethers.providers.Web3Provider(web3.currentProvider,'rinkeby');
   
-          var HashRepoContractAddress = "0xeaa4406e2ad347bd3695306a785fbd99a5286d02";
-          var HashRepoContractABI = [{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitHash","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"repoInfo","outputs":[{"name":"repoMaster","type":"address"},{"name":"name","type":"string"},{"name":"commitCount","type":"uint256"},{"name":"isPrivate","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitHash","type":"string"},{"name":"_commitMessage","type":"string"}],"name":"sendCommit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitMessage","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitBlock","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_add","type":"address"}],"name":"AddToWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"repoID","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_remove","type":"address"}],"name":"RemoveFromWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_name","type":"string"},{"name":"_private","type":"bool"}],"name":"newHashRepo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommiter","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+          var HashRepoContractAddress = "0xa982c18ecc74ae2a316ed0135258eb277c3ca43d";
+          var HashRepoContractABI = [{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitHash","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"}],"name":"GetCommitCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"repoInfo","outputs":[{"name":"repoMaster","type":"address"},{"name":"name","type":"string"},{"name":"commitCount","type":"uint256"},{"name":"isPrivate","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitHash","type":"string"},{"name":"_commitMessage","type":"string"}],"name":"sendCommit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitMessage","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommitBlock","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_add","type":"address"}],"name":"AddToWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"repoID","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_remove","type":"address"}],"name":"RemoveFromWhiteList","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_name","type":"string"},{"name":"_private","type":"bool"}],"name":"newHashRepo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_repoID","type":"uint256"},{"name":"_commitID","type":"uint256"}],"name":"GetCommiter","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
           var HashRepoContract;
           
   
@@ -128,10 +128,12 @@
               HashRepoContract = new ethers.Contract(HashRepoContractAddress, HashRepoContractABI, signer);
           })
   
-          async function getRepoHash(commitIndex) {
-              getRepoCommitPromise = HashRepoContract.repoInfo(1);
-              var RepoCommit = await getRepoCommitPromise;
-              console.log(RepoCommit)
+          async function getCommitCount(RepoID) {
+              getCommitCountPromise = HashRepoContract.GetCommitCount(RepoID);
+              var RepoCommitCount = await getCommitCountPromise;
+              //console.log(RepoCommitCount._hex);
+              console.log(parseInt(RepoCommitCount._hex, 16))
+              //getCommits(RepoCommitCount)
           }
   
   
@@ -139,6 +141,14 @@
               newHashRepoPromise = HashRepoContract.newHashRepo("Yelp", false);
               await newHashRepoPromise;
           }
+
+          async function getCommitHash(repoid, commitid){
+              getCommitHash = HashRepoContract.GetCommitHash(repoid, commitid);
+              var CommitHash = await getCommitHash;
+              console.log(CommitHash)
+          }
+
+
   
       </script>
 
@@ -1296,7 +1306,7 @@
   
       </div>
   
-      <button onclick="getRepoHash(1)" type="submit" class="btn btn-primary js-blob-submit" id="submit-file" data-edit-text="Commit new file" data-pull-text="Propose new file">
+      <button onclick="getCommitCount(0)" type="submit" class="btn btn-primary js-blob-submit" id="submit-file" data-edit-text="Commit new file" data-pull-text="Propose new file">
         Witness hash
       </button>
   
