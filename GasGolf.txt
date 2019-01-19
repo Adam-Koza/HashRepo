@@ -1,0 +1,28 @@
+Old Contract:
+
+Deploy: tx - 1247349, ex - 906549
+
+New Repo: tx - 130958, ex - 108790
+
+New Repo2: tx - 115958, ex - 93790
+
+New Commit: tx - 127883, ex - 105075
+
+New Commit 2: tx - 112883, ex - 90075
+
+
+New Contract:
+
+Deploy: tx - 1313970, ex - 955794           (Added function, costs more.)
+
+New Repo: tx - 98780, ex - 76676            (~25% - ~30% improvement)
+
+New Repo2: tx - 83780, ex - 61676           (~28% - ~34% improvement)
+
+New Commit: tx - 70830, ex - 47958          (~45% - ~55% improvement)
+
+New Commit 2: tx - 55830, ex - 32958        (~51% - ~64% improvement)
+
+
+
+
