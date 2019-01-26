@@ -84,4 +84,8 @@ contract BetterHashRepo {
     function GetRepoName (uint _repoID) public view returns(bytes32) {
         return idToName[_repoID];
     }
+
+    function GetLastestCommit (uint _repoID) public view returns(string memory) {
+        return repoInfo[_repoID].commitLog[(repoInfo[_repoID].commitCount - 1)];
+    }
 }
