@@ -13,8 +13,11 @@ contract BetterHashRepo {
     }
     
     mapping(uint => Repo) public repoInfo;
+    mapping(bytes32 => uint) public nameToRepoID;
+    mapping(uint => bytes32) public idToName;
+
     
-    event NewRepo (uint indexed repo, address indexed owner, string name, bool isPublic, uint forkOf);
+    event NewRepo (uint indexed repo, address indexed owner, bytes32 name, bool isPublic, uint forkOf);
     event AddCommit (uint indexed repo, uint commitCount, address indexed commiter, string IPFS, string message, uint timestamp);
 
     constructor() public {}
@@ -27,23 +30,29 @@ contract BetterHashRepo {
 
     }
 
-    function newHashRepo (string memory _name, bool _isPublic) public returns (uint) {
+    function newHashRepo (bytes32 _name, bool _isPublic) public returns (uint) {
+        require(nameToRepoID[_name] == 0, "Repo name has been taken, please choose another name.");
         repoID += 1;
         repoInfo[repoID].repoMaster = msg.sender;
         repoInfo[repoID].whiteList[msg.sender] = true;
         repoInfo[repoID].commitCount = 0;
         repoInfo[repoID].isPublic = _isPublic;
+        nameToRepoID[_name] = repoID;
+        idToName[repoID] = _name;
         emit NewRepo (repoID, msg.sender, _name, _isPublic, 0);
         return repoID;
     }
     
-    function forkRepo (uint _repoID, string memory _name, bool _isPublic) public returns (uint) {
+    function forkRepo (uint _repoID, bytes32 _name, bool _isPublic) public returns (uint) {
+        require(nameToRepoID[_name] == 0, "Repo name has been taken, please choose another name.");
         repoID += 1;
         repoInfo[repoID].repoMaster = msg.sender;
         repoInfo[repoID].whiteList[msg.sender] = true;
         repoInfo[repoID].commitCount = repoInfo[_repoID].commitCount;
         repoInfo[repoID].isPublic = _isPublic;
-        for (uint i=0; i<repoInfo[_repoID].commitCount; i++) {
+        repoInfo[repoID].isPublic = _isPublic;
+        nameToRepoID[_name] = repoID;
+        for (uint i = 0; i<repoInfo[_repoID].commitCount; i++) {
             repoInfo[repoID].commitLog[i] = repoInfo[_repoID].commitLog[i];
         }
         emit NewRepo (repoID, msg.sender, _name, _isPublic, _repoID);
@@ -66,5 +75,13 @@ contract BetterHashRepo {
 
     function GetCommitHash (uint _repoID, uint _commitID) public view returns(string memory) {
         return repoInfo[_repoID].commitLog[_commitID];
+    }
+
+    function GetRepoID (bytes32 _name) public view returns(uint) {
+        return nameToRepoID[_name];
+    }
+
+    function GetRepoName (uint _repoID) public view returns(bytes32) {
+        return idToName[_repoID];
     }
 }
