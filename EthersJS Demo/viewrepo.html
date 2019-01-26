@@ -106,7 +106,7 @@
 
   </head>
 
-  <body class="logged-out env-production" onload="getCommitCount(0)">
+  <body class="logged-out env-production" onload="getCommitCount(1)">
 
       <script charset="utf-8"
         src="https://cdn.ethers.io/scripts/ethers-v4.min.js"
@@ -134,9 +134,9 @@
               console.log(parseInt(RepoCommitCount._hex, 16));
               for (i=0;i<parseInt(RepoCommitCount._hex, 16);i++){
                 var hash = await getCommitHash(RepoID, i);
-                var commiter = await getCommiter(RepoID, i);
-                var msg = await getCommitMessage(RepoID, i);
-                var block = await getCommitBlock(RepoID, i);
+                var commiter = "";//var commiter = await getCommiter(RepoID, i);
+                var msg = "";//var msg = await getCommitMessage(RepoID, i);
+                var block = "";//var block = await getCommitBlock(RepoID, i);
                 var topblock = document.getElementById('commitlist');
 			          var existinghtml = topblock.innerHTML;
 			          topblock.innerHTML = `<li class="commit commits-list-item js-commits-list-item table-list-item js-navigation-item js-details-container Details js-socket-channel js-updatable-content"
